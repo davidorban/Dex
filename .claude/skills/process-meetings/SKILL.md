@@ -1,6 +1,6 @@
 ---
 name: process-meetings
-description: Process synced Granola meetings to update person pages, extract tasks, and organize meeting notes
+description: Process meetings from MeetGeek (or Granola) to update person pages, extract tasks, and organize meeting notes
 model_hint: balanced
 context: fork
 hooks:
@@ -15,23 +15,15 @@ hooks:
 
 # Process Meetings
 
-Process meetings that have been synced from Granola by the background automation. Updates person pages, extracts tasks, and organizes meeting notes.
-
-## Background Execution
-
-This skill supports background execution. When invoked:
-1. Acknowledge: "Processing [N] meetings in the background. I'll let you know when done."
-2. Process all meetings
-3. On completion, provide summary: "[N] meetings processed. [X] person pages updated. [Y] action items created."
+Process meetings from MeetGeek (primary) or Granola into Dex. Updates person pages, extracts tasks, and organizes meeting notes.
 
 ## How It Works
 
-Meetings are synced automatically every 30 minutes by a background process. This command reads those synced files and:
-- Creates/updates person and company pages
-- Extracts action items to 03-Tasks/Tasks.md
-- Links everything together
+**MeetGeek (primary):** Uses MeetGeek MCP tools to fetch meetings directly. No background sync needed — data is live.
 
-**No terminal commands are shown** - the heavy lifting happens in the background.
+**Granola (fallback):** If configured, reads from background-synced files in `00-Inbox/Meetings/`.
+
+The meeting source is configured in `System/user-profile.yaml` → `meeting_processing.source`.
 
 ## Arguments
 
@@ -40,69 +32,100 @@ Meetings are synced automatically every 30 minutes by a background process. This
 - `"search term"`: Find meetings by title/attendee
 - `--people-only`: Only update person/company pages (skip tasks)
 - `--no-todos`: Create notes but don't extract tasks
-- `--setup`: Install/check background automation
-
-## Pre-flight: Granola Check
-
-Mobile recordings sync automatically as long as Granola is installed and the user is signed in to the desktop app. No separate authentication step needed.
+- `--source meetgeek|granola`: Override configured source for this run
 
 ---
 
 ## Process
 
-### Step 1: Check Background Sync Status
+### Step 1: Determine Meeting Source
 
-First, check if background sync is set up:
+Read `System/user-profile.yaml` → `meeting_processing.source`.
+
+- **If `meetgeek`:** Use MeetGeek MCP tools (Step 2a)
+- **If `granola`:** Use Granola background sync files (Step 2b)
+
+### Step 2a: Fetch Meetings from MeetGeek
+
+Use MeetGeek MCP tools to fetch recent meetings:
+
+1. **List meetings:** Call `meetgeek:meetings` to get meetings from the last 7 days (or today if `today` arg)
+2. **For each meeting**, fetch details:
+   - Call `meetgeek:meetingDetails` for metadata (title, date, participants, duration)
+   - Call `meetgeek:summary` for AI-generated summary and action items
+   - Call `meetgeek:transcript` for full transcript (store for reference)
+   - Call `meetgeek:highlights` for key moments
+
+3. **Check processing state:** Read `.scripts/meeting-intel/processed-meetings.json` (create if missing)
+   - Skip meetings whose ID is already in the processed list
+   - Track by MeetGeek meeting ID
+
+4. **Save meeting note** to `00-Inbox/Meetings/YYYY-MM-DD - {Meeting Title}.md`:
+   ```markdown
+   ---
+   date: {YYYY-MM-DD}
+   source: meetgeek
+   meetgeek_id: {meeting_id}
+   participants: [{names}]
+   duration: {minutes}
+   ---
+
+   # {Meeting Title}
+
+   **Date:** {date} | **Duration:** {duration} min
+
+   ## Participants
+   {list of participants with roles if available}
+
+   ## Summary
+   {AI summary from MeetGeek}
+
+   ## Key Highlights
+   {highlights from MeetGeek}
+
+   ## Action Items
+
+   ### For Me
+   {action items assigned to user}
+
+   ### For Others
+   {action items for other participants}
+
+   ## Transcript
+   <details>
+   <summary>Full transcript</summary>
+
+   {transcript with speaker labels}
+
+   </details>
+   ```
+
+5. **Update processed state** with meeting ID and timestamp.
+
+Report findings:
+> "Found X meetings from MeetGeek (last 7 days). Y are new, Z already processed."
+
+### Step 2b: Fetch Meetings from Granola (Fallback)
+
+Check if background sync is set up:
 
 ```bash
-# Check for state file (indicates sync has run)
 ls .scripts/meeting-intel/processed-meetings.json
 ```
 
-**If state file exists:** Background sync is working. Continue to Step 2.
+**If state file exists:** Read synced meeting files from `00-Inbox/Meetings/`.
 
-**If state file doesn't exist:**
-> "Background meeting sync isn't set up yet. This runs automatically every 30 minutes so `/process-meetings` doesn't need terminal commands.
->
-> **To set up (one-time, takes 30 seconds):**
-> ```bash
-> cd .scripts/meeting-intel && ./install-automation.sh
-> ```
->
-> Or run `/process-meetings --setup` and I'll do it for you.
->
-> **Requirements:**
-> - Granola app installed ([granola.ai](https://granola.ai))
-> - An LLM API key in `.env` (GEMINI_API_KEY, ANTHROPIC_API_KEY, or OPENAI_API_KEY)"
-
-If user runs `--setup`:
-```bash
-cd .scripts/meeting-intel && ./install-automation.sh
-```
-
-### Step 2: Find Synced Meetings
-
-Read the processed meetings state:
-```javascript
-const state = JSON.parse(fs.readFileSync('.scripts/meeting-intel/processed-meetings.json'));
-```
-
-List meeting files in `00-Inbox/Meetings/`:
-```bash
-find 00-Inbox/Meetings -name "*.md" -mtime -7 | head -50
-```
+**If not:** Guide user to set up Granola background sync:
+> "Background meeting sync isn't set up. Run `/process-meetings --setup` or switch to MeetGeek with `/process-meetings --source meetgeek`."
 
 For each meeting file:
 1. Read frontmatter to get `granola_id`, `participants`, `company`, `date`
 2. Check if person/company pages need updating
-3. Check if tasks need extracting (look for unchecked items in "For Me" section)
-
-Report findings:
-> "Found X synced meetings from the last 7 days. Y need person page updates, Z have unextracted tasks."
+3. Check if tasks need extracting
 
 ### Step 3: Update Person Pages
 
-For each participant in synced meetings:
+For each participant in meetings:
 
 1. **Load user profile** for email domain:
    ```

@@ -8,9 +8,9 @@
 
 ## Core Workflows (8 features)
 
-- [ ] Daily planning (`/daily-plan`)
+- [x] Daily planning (`/daily-plan`)
 - [ ] Daily review (`/review` or `/daily-review`)
-- [ ] Weekly planning (`/week-plan`)
+- [x] Weekly planning (`/week-plan`)
 - [ ] Weekly review (`/week-review`)
 - [ ] Quarterly planning (`/quarter-plan`)
 - [ ] Quarterly review (`/quarter-review`)
@@ -20,11 +20,11 @@
 ## Meeting Workflows (7 features)
 
 - [ ] Meeting prep (`/meeting-prep`)
-- [ ] Meeting processing (`/process-meetings`)
+- [x] Meeting processing (`/process-meetings`)
 - [ ] Commitment scan (`/commitment-scan`)
-- [ ] Person page created
-- [ ] Person page updated
-- [ ] Company page created
+- [x] Person page created
+- [x] Person page updated
+- [x] Company page created
 - [ ] Granola connected
 
 ## Task Management (6 features)
@@ -107,7 +107,8 @@
 ## Tracking Metadata
 
 - **Last dex-level-up prompt:** (not yet prompted)
-- **First daily plan:** (not yet run)
+- **First daily plan:** 2026-03-22
+- **Last daily plan:** 2026-04-01 (revised)
 - **Setup date:** (set during onboarding)
 
 ---

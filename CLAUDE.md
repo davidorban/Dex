@@ -73,12 +73,14 @@ The system automatically suggests `/getting-started` at next session if vault < 
 ## User Profile
 
 <!-- Updated during onboarding -->
-**Name:** Not yet configured
-**Role:** Not yet configured
-**Company Size:** Not yet configured
-**Working Style:** Not yet configured
+**Name:** David Orban
+**Role:** Head of Innovation
+**Company:** Al Liwan Group (Abu Dhabi)
+**Company Size:** Startup/small (1-100)
 **Pillars:**
-- Not yet configured
+- Al Liwan Labs — Compliant AI workflow development
+- Change & Knowledge Management — AI adoption processes
+- Digital Asset Strategy — Digital asset planning
 
 ---
 

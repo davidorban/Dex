@@ -14,15 +14,60 @@
 #
 # The Work MCP uses these to categorize tasks and check balance across your work.
 
-pillars: []
-  # Will be populated during onboarding
-  # Example structure:
-  # - id: pillar_id
-  #   name: "Pillar Name"
-  #   description: "What this pillar represents"
-  #   keywords:
-  #     - keyword1
-  #     - keyword2
+pillars:
+  - id: al_liwan_labs
+    name: "Al Liwan Labs"
+    description: "Design, budget, and operate the AI innovation entity — workflow automation, agent deployment, pilot management, AI Knowledge Hours, and the 5-track implementation roadmap (R3)"
+    keywords:
+      - ai
+      - workflows
+      - labs
+      - innovation
+      - agents
+      - automation
+      - llm
+      - claude
+      - cowork
+      - knowledge hour
+      - pilot
+      - presentation pipeline
+      - deal flow
+      - executive intelligence
+      - operational documentation
+      - contact management
+      - role charter
+
+  - id: change_knowledge_mgmt
+    name: "Change & Knowledge Management"
+    description: "Drive AI adoption across Al Liwan through training, change management, and knowledge capture — AI readiness assessment, champion network, tool deployment (R2/R3)"
+    keywords:
+      - change management
+      - knowledge management
+      - adoption
+      - training
+      - processes
+      - governance
+      - transformation
+      - onboarding
+      - knowledge hour
+      - intranet
+      - documentation
+
+  - id: digital_asset_strategy
+    name: "Digital Asset Strategy"
+    description: "Lead digital assets strategy, venture studio pipeline, and regulated infrastructure partnerships — Maritime AI, SRI, deal evaluation, regulatory engagement (R4)"
+    keywords:
+      - digital assets
+      - venture studio
+      - maritime ai
+      - sri
+      - partnerships
+      - regulated
+      - strategy
+      - deals
+      - investment
+      - fintech
+      - aml
 
 # Priority limits (how many active tasks per priority level)
 priority_limits:
