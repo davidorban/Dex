@@ -1502,7 +1502,7 @@ def generate_goal_id(quarter: str, existing_goals: List[Dict]) -> str:
     max_num = 0
     prefix = f"{q_num}-{year}-goal-"
     for goal in existing_goals:
-        if 'goal_id' in goal and goal['goal_id'].startswith(prefix):
+        if goal.get('goal_id') and goal['goal_id'].startswith(prefix):
             try:
                 num = int(goal['goal_id'].split('-')[-1])
                 max_num = max(max_num, num)
@@ -1623,15 +1623,17 @@ def get_goal_by_id(goal_id: str) -> Optional[Dict[str, Any]]:
             return goal
     return None
 
-def find_linked_priorities(goal_id: str) -> List[Dict[str, Any]]:
+def find_linked_priorities(goal_id: Optional[str]) -> List[Dict[str, Any]]:
     """Find all weekly priorities linked to a goal"""
+    if not goal_id:
+        return []
     priorities_file = get_week_priorities_file()
     if not priorities_file.exists():
         return []
-    
+
     content = priorities_file.read_text()
     lines = content.split('\n')
-    
+
     linked_priorities = []
     for i, line in enumerate(lines):
         # Look for lines that mention the goal_id
