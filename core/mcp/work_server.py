@@ -33,9 +33,18 @@ import mcp.types as types
 from mcp.server import NotificationOptions, Server
 from mcp.server.models import InitializationOptions
 
+# Set up logging first (before any imports that might use it)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Add grandparent directory to path for 'core.utils' imports
+# The script is at core/mcp/work_server.py, so we need to add the vault root
+# Must happen BEFORE any 'core.*' imports below.
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+
 # QMD semantic search (optional - gracefully degrade if not available)
 try:
-    from utils.qmd_query import is_qmd_available, vault_search
+    from core.utils.qmd_query import is_qmd_available, vault_search
     HAS_QMD = True
 except ImportError:
     HAS_QMD = False
@@ -48,14 +57,6 @@ except ImportError:
     HAS_ANALYTICS = False
     def _fire_analytics_event(event_name, properties=None):
         return {'fired': False, 'reason': 'analytics_not_available'}
-
-# Set up logging first (before any imports that might use it)
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Add grandparent directory to path for 'core.utils' imports
-# The script is at core/mcp/work_server.py, so we need to add the vault root
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 # Import reference formatter for Obsidian wiki link support
 try:
@@ -73,11 +74,10 @@ except ImportError:
     HAS_REFERENCE_FORMATTER = False
 
 # Import QMD search index refresh (optional - silently skips if QMD not installed)
+# Note: must NOT touch HAS_QMD here — that flag tracks qmd_query, not the indexer.
 try:
     from core.utils.qmd_indexer import refresh_search_index
-    HAS_QMD = True
 except ImportError:
-    HAS_QMD = False
     def refresh_search_index(): pass
 
 # Health system — error queue and health reporting
