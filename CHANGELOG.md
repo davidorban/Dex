@@ -7,6 +7,31 @@ All notable changes to Dex will be documented in this file.
 
 ---
 
+## [1.20.0] — Proactive Librarian: Instant Research Citations with Page Numbers (2026-05-16)
+
+### 🔍 Instant, Page-Accurate Research Citations
+
+**Before:** Finding the right passage in your 1,377 research PDFs was painful. You had to remember which report contained what you needed, open PDFs one by one, and manually hunt for the right page. Citing research properly took 20–90 minutes and often got skipped.
+
+**Now:** Run `/librarian "your topic"` and get the top relevant passages back with precise citations (`Report_Name.pdf:p.12`). The system uses hybrid semantic + keyword search over a per-page indexed version of your entire Research library.
+
+**Result:** Research citation time dropped from up to 90 minutes to under 30 seconds. You now cite primary sources more often and with higher credibility because the page numbers are exact and easy to verify.
+
+**How to use it:**
+1. Make sure you've run the initial ingest (one-time):
+   ```bash
+   source /tmp/librarian-venv/bin/activate
+   python .claude/skills/librarian/scripts/ingest.py --verbose
+   ```
+2. Then just use the command:
+   ```bash
+   /librarian "agentic AI adoption challenges in financial services"
+   ```
+
+The first "AI improves [X]" recipe (`01-AI-improves-research-citation.md`) is now live in `06-Resources/Recipe_Library/`.
+
+---
+
 ## [1.19.0] — Semantic Search Now Covers Your Entire Vault (2026-03-23)
 
 ### 🔍 Semantic Search Now Covers Your Entire Vault

@@ -1,5 +1,8 @@
 # Recipe: AI Improves Research Citation — Proactive Librarian
 
+> **🆕 New in Dex v1.20 (May 2026)**  
+> The Proactive Librarian is now available. Run `/librarian "your query"` to get instant, page-accurate citations from your entire 1,377-PDF research library.
+
 **Date:** 2026-05-16  
 **Author:** David Orban  
 **Pillar:** Change & Knowledge Management (R2) + Al Liwan Labs (R3)  
