@@ -80,24 +80,6 @@ ALLOWED_SUBJECTS: set[str] = {
     "ZZ Archived Structure",
 }
 
-# Optional: per-subject geography hints (not a hard whitelist in v1)
-# These are the most common second-level directories observed. They are used
-# only for documentation and future stricter validation if desired.
-COMMON_GEOGRAPHIES: dict[str, set[str]] = {
-    "Artificial Intelligence": {
-        "AI Pulse", "Ethics", "General", "Global", "Governance", "Healthcare",
-        "Industry Analysis", "Infrastructure", "Policy and Governance",
-        "Regional (Americas)", "Regional (Europe)", "Regional (India)",
-        "Regional (Japan)", "Regional (UK)", "Smart Cities", "Society", "Strategy",
-    },
-    "Cryptocurrency": {
-        "Digital Assets", "General", "Global", "Regulation", "Stablecoin",
-        "store-value-of-digital-oil-btc-eth.pdf",  # edge case file directly under subject
-    },
-    # ... (other subjects have fewer or no second-level folders in the current snapshot)
-}
-
-
 def derive_subject_geography(pdf_path: Path) -> Tuple[str, Optional[str]]:
     """
     Given a path like:
