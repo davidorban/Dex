@@ -15,13 +15,12 @@
 When writing memos, briefs, decks, or strategy documents, I frequently needed to cite research PDFs from my library of 1,377 documents (~11 GB) in `06-Resources/Research/`.
 
 **Previous workflow:**
-- Manually search folder names and file names (very slow)
-- Open PDFs one by one and use Ctrl+F
-- Often couldn't remember which report contained the specific data point
-- No reliable way to get **page-level citations** quickly
-- Result: Either weak citations or hours wasted digging through reports
+- Folder/filename grep (slow, brittle, depends on remembering where a report lived)
+- Opening PDFs one by one with Ctrl+F
+- Often couldn't recall which report contained the specific data point
+- No quick path to **page-level citations**
 
-This was a classic high-friction, low-leverage task that happened repeatedly.
+The friction was high enough that I'd often cite vaguely (or not at all) rather than dig.
 
 ---
 
@@ -41,7 +40,7 @@ And get back the top relevant passages with **precise page citations** I can pas
 3. Paste the citation + excerpt into my deliverable
 4. Click the link in Obsidian/Preview to jump straight to the page
 
-Time to get good citations: **under 30 seconds** instead of 20–60+ minutes.
+Query latency is under 30 seconds end-to-end (hybrid lex+vec search). The wall-clock improvement vs. the previous folder-grep workflow is substantial but hasn't been formally benchmarked — the qualitative shift (citation becomes the default behaviour, not the exception) is the real win.
 
 ---
 
@@ -85,19 +84,24 @@ This recipe is now reusable for any large document collection.
 
 ---
 
-## Results & Measurement
+## Results
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Time to find relevant passages | 20–90 min | < 30 sec | **40–180x faster** |
-| Quality of citations | Often vague or missing | Precise (`File.pdf:p.12`) | Dramatically better |
-| Friction to cite research | High (avoided when possible) | Low (now default behavior) | Behavioral shift |
-| Derived cache size | N/A | 132 MB | Highly efficient |
+| Dimension | Before | After |
+|---|---|---|
+| Citation precision | Vague (e.g., "in a McKinsey report") | Specific (`File.pdf:p.12`) |
+| Friction to cite research | High — often skipped | Low — now the default behaviour |
+| Derived cache size | n/a | 132 MB across the page-per-file tree |
+| Query latency | minutes to hours of manual search | sub-30-second hybrid retrieval |
 
 **Qualitative wins:**
-- I now cite research *more often* because it's easy
-- Citations are more credible (specific pages instead of "in a McKinsey report")
-- The system surfaces reports I had forgotten existed
+- I cite research *more often* because the friction collapsed.
+- Citations are more credible because they include the page.
+- The system surfaces reports I had forgotten existed.
+
+**Honest caveats:**
+- The "before" timing range was never instrumented; it's a recollection, not a measurement.
+- Page-number accuracy depends on PDF extraction quality (image-only or heavily formatted PDFs may misreport).
+- 39 of 1,377 PDFs failed ingest on the first pass (mostly encrypted or in the legacy `ZZ Archived Structure/` folder). See `06-Resources/Research/.derived/_failures.json`.
 
 ---
 
